@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Slider</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 80%;
+      max-width: 600px;
+      overflow: hidden;
+    }
+
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .slider img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .prev, .next, .pause {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 50%;
+    }
+
+    .prev {
+      left: 10px;
+    }
+
+    .next {
+      right: 10px;
+    }
+
+    .pause {
+      top: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body>
+
+<div class="slider-container">
+  <div class="slider">
+    <img src="https://via.placeholder.com/600x400/FF6347/FFFFFF?text=Image+1" alt="Image 1">
+    <img src="https://via.placeholder.com/600x400/32CD32/FFFFFF?text=Image+2" alt="Image 2">
+    <img src="https://via.placeholder.com/600x400/1E90FF/FFFFFF?text=Image+3" alt="Image 3">
+  </div>
+  <button class="prev" onclick="prevSlide()">&#10094;</button>
+  <button class="next" onclick="nextSlide()">&#10095;</button>
+  <button class="pause" onclick="toggleAutoplay()">Pause</button>
+</div>
+
+<script>
+  let currentIndex = 0;
+  let sliderImages = document.querySelectorAll('.slider img');
+  let totalImages = sliderImages.length;
+  let autoplayInterval;
+  let autoplayActive = true;
+
+  // Function to move to the next slide
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % totalImages;
+    updateSlider();
+  }
+
+  // Function to move to the previous slide
+  function prevSlide() {
+    currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+    updateSlider();
+  }
+
+  // Function to update the slider position
+  function updateSlider() {
+    const slider = document.querySelector('.slider');
+    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+  }
+
+  // Autoplay function to move to the next slide at regular intervals
+  function startAutoplay() {
+    autoplayInterval = setInterval(nextSlide, 3000); // 3 seconds interval
+  }
+
+  // Pause or resume the autoplay
+  function toggleAutoplay() {
+    if (autoplayActive) {
+      clearInterval(autoplayInterval);
+      document.querySelector('.pause').textContent = 'Resume';
+    } else {
+      startAutoplay();
+      document.querySelector('.pause').textContent = 'Pause';
+    }
+    autoplayActive = !autoplayActive;
+  }
+
+  // Start the autoplay when the page loads
+  startAutoplay();
+</script>
+
+</body>
+</html>
+
+
