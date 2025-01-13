@@ -1841,3 +1841,1086 @@
 </body>
 </html>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Storage CRUD App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 0;
+    }
+    button {
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #555;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .table th, .table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .table th {
+      background-color: #333;
+      color: white;
+    }
+    .actions button {
+      margin: 5px;
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Local Storage CRUD App</h1>
+
+  <div>
+    <input type="text" id="nameInput" placeholder="Enter Name">
+    <button id="addBtn">Add</button>
+    <input type="text" id="searchInput" placeholder="Search by Name">
+  </div>
+
+  <table class="table" id="dataTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const nameInput = document.getElementById('nameInput');
+    const addBtn = document.getElementById('addBtn');
+    const searchInput = document.getElementById('searchInput');
+    const dataTable = document.querySelector('#dataTable tbody');
+
+    // Load data from local storage
+    function loadData() {
+      const data = JSON.parse(localStorage.getItem('crudData')) || [];
+      renderTable(data);
+    }
+
+    // Render data into the table
+    function renderTable(data) {
+      dataTable.innerHTML = '';
+      data.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item}</td>
+          <td class="actions">
+            <button onclick="editItem(${index})">Edit</button>
+            <button onclick="deleteItem(${index})">Delete</button>
+          </td>
+        `;
+        dataTable.appendChild(row);
+      });
+    }
+
+    // Add item to local storage
+    addBtn.addEventListener('click', () => {
+      const name = nameInput.value.trim();
+      if (!name) return alert('Name cannot be empty!');
+      
+      const data = JSON.parse(localStorage.getItem('crudData')) || [];
+      data.push(name);
+      localStorage.setItem('crudData', JSON.stringify(data));
+      nameInput.value = '';
+      loadData();
+    });
+
+    // Edit item
+    function editItem(index) {
+      const data = JSON.parse(localStorage.getItem('crudData')) || [];
+      const newName = prompt('Edit Name:', data[index]);
+      if (newName !== null && newName.trim() !== '') {
+        data[index] = newName.trim();
+        localStorage.setItem('crudData', JSON.stringify(data));
+        loadData();
+      }
+    }
+
+    // Delete item
+    function deleteItem(index) {
+      const data = JSON.parse(localStorage.getItem('crudData')) || [];
+      if (confirm('Are you sure you want to delete this item?')) {
+        data.splice(index, 1);
+        localStorage.setItem('crudData', JSON.stringify(data));
+        loadData();
+      }
+    }
+
+    // Search items
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const data = JSON.parse(localStorage.getItem('crudData')) || [];
+      const filteredData = data.filter(item => item.toLowerCase().includes(query));
+      renderTable(filteredData);
+    });
+
+    // Initial load
+    loadData();
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Menu</title>
+    <style>
+        #menu ul li{
+            display: inline-block;
+            width: 150px;
+            padding: 5px 10px;
+            background-color: grey;
+            color: black;
+        }
+        #arrow {
+            text-align: center;
+            display: none;
+        div{
+            width: 150px;
+            padding: 5px 10px;
+            float: left;
+        }}
+    </style>
+</head>
+<body>
+
+<input type="text" name="newValue" id="newValue">
+<input type="submit" value="Add" onclick="addMenu()">
+<a href="#" onclick="activateEditMode()">Edit</a>
+<div id="menu" style="border: 1px solid black"></div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    let arrMenu=['Menu1','Menu2','Menu3']
+
+    function getMenu(){
+        let ulMenu='<ul>';
+        let arrowElement='<div id="arrow">';
+        for (let i in arrMenu){
+            ulMenu+='<li>'+arrMenu[i]+'</li>';
+            if(i==0){
+                arrowElement+=' <div><a href="#" onclick="moveRight('+i+')">-></a> </div>';
+            }
+            else if(i==arrMenu.length-1){
+                arrowElement+=' <div ><a href="#" onclick="moveLeft('+i+')"><-</a> </div>';
+            }
+            else {
+                arrowElement+='  <div><a href="#" onclick="moveLeft('+ i +')"><-</a>|<a href="#" onclick="moveRight('+ i +')">-></a></div>';
+            }
+        }
+        ulMenu+='</ul>';
+        arrowElement+='</div>';
+        return ulMenu + arrowElement;
+    }
+    function moveLeft(index){
+        let firstElement=arrMenu[index];
+        let secondElement=arrMenu[index-1];
+        arrMenu.splice(index-1,2,firstElement,secondElement)
+        showMenu();
+    }
+    function moveRight(index){
+        let firstElement=arrMenu[index];
+        let secondElement=arrMenu[index+1];
+        arrMenu.splice(index,2,secondElement,firstElement);
+        showMenu();
+    }
+    function showMenu(){
+        let divMenu = document.getElementById('menu');
+        divMenu.innerHTML=getMenu();
+    }
+    showMenu();
+
+    function addMenu(){
+        let input=document.getElementById('newValue');
+        arrMenu.push(input.value);
+        input.value='';
+        showMenu();
+    }
+    function activateEditMode(){
+        document.getElementById('arrow').style.display='block';
+    }
+
+
+
+
+</script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Website</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      background: #333;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    header nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 18px;
+    }
+
+    header nav a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      padding: 100px 20px;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    p {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+
+    /* About Me Section */
+    #about {
+      background: #f4f4f4;
+    }
+
+    /* Projects Section */
+    #projects {
+      background: #e2e2e2;
+    }
+
+    #projects ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+    }
+
+    #projects li {
+      background: white;
+      border: 1px solid #ddd;
+      margin: 10px;
+      padding: 20px;
+      text-align: center;
+      width: 250px;
+      transition: transform 0.3s;
+    }
+
+    #projects li:hover {
+      transform: translateY(-10px);
+    }
+
+    /* Contact Section */
+    #contact {
+      background: #f9f9f9;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    input, textarea, button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #555;
+    }
+
+    /* Smooth Scroll and Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <nav>
+      <a href="#about">About Me</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- About Me Section -->
+  <section id="about" class="fade-in">
+    <h1>About Me</h1>
+    <p>Hi, I'm [Your Name], a passionate web developer who loves creating interactive and dynamic websites. I specialize in front-end development, including HTML, CSS, JavaScript, and more.</p>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="fade-in">
+    <h2>My Projects</h2>
+    <ul>
+      <li>
+        <h3>Expense Tracker</h3>
+        <p>A web app to track daily expenses and manage budgets.</p>
+      </li>
+      <li>
+        <h3>Memory Game</h3>
+        <p>An interactive card-flipping memory game.</p>
+      </li>
+      <li>
+        <h3>Currency Converter</h3>
+        <p>A tool to convert currencies using real-time exchange rates.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="fade-in">
+    <h2>Contact Me</h2>
+    <form id="contactForm">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="email" id="email" placeholder="Your Email" required>
+      <textarea id="message" placeholder="Your Message" rows="5" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+
+  <script>
+    // Form Validation
+    const contactForm = document.getElementById('contactForm');
+
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !message) {
+        alert('Please fill out all fields.');
+        return;
+      }
+
+      if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      alert('Thank you for your message!');
+      contactForm.reset();
+    });
+
+    // Fade-In Animation on Scroll
+    const sections = document.querySelectorAll('section');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+  </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .time {
+      font-size: 3em;
+      margin: 20px 0;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #333;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+
+    .laps {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .laps ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .laps li {
+      padding: 5px 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      margin-bottom: 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stopwatch</h1>
+  <div class="time" id="display">00:00:00</div>
+  <div class="buttons">
+    <button id="start">Start</button>
+    <button id="pause" disabled>Pause</button>
+    <button id="reset" disabled>Reset</button>
+    <button id="lap" disabled>Lap</button>
+  </div>
+  <div class="laps">
+    <h2>Laps</h2>
+    <ul id="lapsList"></ul>
+  </div>
+
+  <script>
+    // Stopwatch Variables
+    let hours = 0,
+        minutes = 0,
+        seconds = 0,
+        interval = null;
+
+    const display = document.getElementById('display');
+    const lapsList = document.getElementById('lapsList');
+    const startBtn = document.getElementById('start');
+    const pauseBtn = document.getElementById('pause');
+    const resetBtn = document.getElementById('reset');
+    const lapBtn = document.getElementById('lap');
+
+    // Update the display
+    function updateDisplay() {
+      const formatTime = (time) => (time < 10 ? `0${time}` : time);
+      display.textContent = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+    }
+
+    // Start the stopwatch
+    function startStopwatch() {
+      interval = setInterval(() => {
+        seconds++;
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+        }
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+        updateDisplay();
+      }, 1000);
+
+      startBtn.disabled = true;
+      pauseBtn.disabled = false;
+      resetBtn.disabled = false;
+      lapBtn.disabled = false;
+    }
+
+    // Pause the stopwatch
+    function pauseStopwatch() {
+      clearInterval(interval);
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+    }
+
+    // Reset the stopwatch
+    function resetStopwatch() {
+      clearInterval(interval);
+      hours = 0;
+      minutes = 0;
+      seconds = 0;
+      updateDisplay();
+      lapsList.innerHTML = '';
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      resetBtn.disabled = true;
+      lapBtn.disabled = true;
+    }
+
+    // Add a lap
+    function addLap() {
+      const lapTime = document.createElement('li');
+      lapTime.textContent = display.textContent;
+      lapsList.appendChild(lapTime);
+    }
+
+    // Event Listeners
+    startBtn.addEventListener('click', startStopwatch);
+    pauseBtn.addEventListener('click', pauseStopwatch);
+    resetBtn.addEventListener('click', resetStopwatch);
+    lapBtn.addEventListener('click', addLap);
+  </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+
+    blockquote {
+      font-size: 1.5em;
+      margin: 20px 0;
+      font-style: italic;
+      color: #555;
+    }
+
+    footer {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      background-color: #007BFF;
+    }
+
+    .copy-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .quote-author {
+      font-size: 1.2em;
+      color: #333;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Random Quote Generator</h1>
+    <blockquote id="quoteText">Loading quote...</blockquote>
+    <footer id="quoteAuthor">- Author</footer>
+    <button id="newQuoteBtn">Get New Quote</button>
+    <button class="copy-btn" id="copyBtn">Copy Quote</button>
+  </div>
+
+  <script>
+    // API URL to fetch quotes
+    const apiUrl = "https://api.quotable.io/random";
+
+    const quoteText = document.getElementById('quoteText');
+    const quoteAuthor = document.getElementById('quoteAuthor');
+    const newQuoteBtn = document.getElementById('newQuoteBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    // Fetch a random quote from the API
+    async function getQuote() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        quoteText.textContent = `"${data.content}"`;
+        quoteAuthor.textContent = `- ${data.author}`;
+      } catch (error) {
+        console.error("Error fetching quote:", error);
+        quoteText.textContent = "Sorry, something went wrong!";
+        quoteAuthor.textContent = "";
+      }
+    }
+
+    // Copy quote to clipboard
+    function copyQuoteToClipboard() {
+      const range = document.createRange();
+      range.selectNode(quoteText);
+      window.getSelection().removeAllRanges(); // Clear any previous selections
+      window.getSelection().addRange(range); // Select the quote text
+      document.execCommand('copy'); // Copy the selected text to clipboard
+      alert('Quote copied to clipboard!');
+    }
+
+    // Event Listeners
+    newQuoteBtn.addEventListener('click', getQuote);
+    copyBtn.addEventListener('click', copyQuoteToClipboard);
+
+    // Load initial quote when the page loads
+    window.onload = getQuote;
+  </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drum Kit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #333;
+      color: #fff;
+      padding: 50px;
+    }
+
+    .drum-pad {
+      display: inline-block;
+      margin: 10px;
+      padding: 20px;
+      background-color: #555;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.5em;
+      transition: transform 0.1s ease-in-out;
+    }
+
+    .drum-pad:active {
+      transform: scale(1.1);
+    }
+
+    .record-btn, .playback-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #444;
+      border: none;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    .playback-btn {
+      background-color: #0066cc;
+    }
+
+    .record-btn:disabled, .playback-btn:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Drum Kit</h1>
+  <div>
+    <div class="drum-pad" data-key="Q">Q</div>
+    <div class="drum-pad" data-key="W">W</div>
+    <div class="drum-pad" data-key="E">E</div>
+    <div class="drum-pad" data-key="A">A</div>
+    <div class="drum-pad" data-key="S">S</div>
+    <div class="drum-pad" data-key="D">D</div>
+    <div class="drum-pad" data-key="Z">Z</div>
+    <div class="drum-pad" data-key="X">X</div>
+    <div class="drum-pad" data-key="C">C</div>
+  </div>
+  
+  <button class="record-btn" id="recordBtn">Start Recording</button>
+  <button class="playback-btn" id="playbackBtn" disabled>Playback</button>
+
+  <script>
+    const drumPads = document.querySelectorAll('.drum-pad');
+    const recordBtn = document.getElementById('recordBtn');
+    const playbackBtn = document.getElementById('playbackBtn');
+    let recording = [];
+    let isRecording = false;
+
+    const soundMap = {
+      Q: new Audio('https://www.soundjay.com/button/beep-07.wav'),
+      W: new Audio('https://www.soundjay.com/button/beep-08b.wav'),
+      E: new Audio('https://www.soundjay.com/button/beep-09.wav'),
+      A: new Audio('https://www.soundjay.com/button/beep-10.wav'),
+      S: new Audio('https://www.soundjay.com/button/beep-11.wav'),
+      D: new Audio('https://www.soundjay.com/button/beep-12.wav'),
+      Z: new Audio('https://www.soundjay.com/button/beep-13.wav'),
+      X: new Audio('https://www.soundjay.com/button/beep-14.wav'),
+      C: new Audio('https://www.soundjay.com/button/beep-15.wav')
+    };
+
+    function playSound(key) {
+      soundMap[key].currentTime = 0;
+      soundMap[key].play();
+    }
+
+    function handleKeyPress(event) {
+      const key = event.key.toUpperCase();
+      if (soundMap[key]) {
+        playSound(key);
+        animateButton(key);
+        if (isRecording) {
+          recording.push(key);
+        }
+      }
+    }
+
+    function animateButton(key) {
+      const pad = document.querySelector(`[data-key="${key}"]`);
+      pad.classList.add('active');
+      setTimeout(() => pad.classList.remove('active'), 100);
+    }
+
+    drumPads.forEach(pad => {
+      pad.addEventListener('click', () => {
+        const key = pad.getAttribute('data-key');
+        playSound(key);
+        animateButton(key);
+        if (isRecording) {
+          recording.push(key);
+        }
+      });
+    });
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    recordBtn.addEventListener('click', () => {
+      isRecording = !isRecording;
+      recordBtn.textContent = isRecording ? 'Stop Recording' : 'Start Recording';
+      playbackBtn.disabled = !isRecording;
+    });
+
+    playbackBtn.addEventListener('click', () => {
+      if (recording.length > 0) {
+        let delay = 0;
+        recording.forEach(key => {
+          setTimeout(() => {
+            playSound(key);
+            animateButton(key);
+          }, delay);
+          delay += 500;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    table {
+      width: 80%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .cart-total {
+      margin-top: 20px;
+      font-size: 1.5em;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shopping Cart</h1>
+  <table id="cartTable">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <div class="cart-total">
+    Total: $<span id="totalPrice">0</span>
+  </div>
+  <button id="addItemBtn">Add Item</button>
+
+  <script>
+    const cartTable = document.querySelector('#cartTable tbody');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const addItemBtn = document.getElementById('addItemBtn');
+
+    let cart = [];
+    
+    function updateCart() {
+      cartTable.innerHTML = '';
+      let total = 0;
+      cart.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>$${item.price}</td>
+          <td><button onclick="removeItem(${index})">Remove</button></td>
+        `;
+        cartTable.appendChild(row);
+        total += item.price;
+      });
+      totalPriceElement.textContent = total;
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    addItemBtn.addEventListener('click', () => {
+      const itemName = prompt('Enter item name');
+      const itemPrice = parseFloat(prompt('Enter item price'));
+      if (itemName && !isNaN(itemPrice)) {
+        cart.push({ name: itemName, price: itemPrice });
+        updateCart();
+      }
+    });
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      margin: 0;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 80%;
+      font-size: 1em;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>BMI Calculator</h1>
+    <label for="height">Height (cm):</label>
+    <input type="number" id="height" placeholder="Enter height">
+    <label for="weight">Weight (kg):</label>
+    <input type="number" id="weight" placeholder="Enter weight">
+    <button id="calculateBtn">Calculate BMI</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById('calculateBtn').addEventListener('click', () => {
+      const height = parseFloat(document.getElementById('height').value) / 100;
+      const weight = parseFloat(document.getElementById('weight').value);
+      if (height && weight) {
+        const bmi = weight / (height * height);
+        let category = '';
+        if (bmi < 18.5) category = 'Underweight';
+        else if (bmi < 24.9) category = 'Normal weight';
+        else if (bmi < 29.9) category = 'Overweight';
+        else category = 'Obesity';
+
+        document.getElementById('result').innerHTML = `Your BMI is ${bmi.toFixed(2)}. Category: ${category}`;
+      } else {
+        document.getElementById('result').innerHTML = 'Please enter valid values for height and weight.';
+      }
+    });
+  </script>
+</body>
+</html>
